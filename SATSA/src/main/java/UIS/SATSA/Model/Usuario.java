@@ -1,6 +1,7 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
@@ -32,9 +33,12 @@ public class Usuario {
     @JoinColumn(name = "id_programa")
     private ProgramaAcademico programa;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Token> tokens;
+
     public Usuario() {super();}
 
-    public Usuario(Integer id, String email, String contrasena, String nombres, String apellidos, String telefono, boolean cuenta_activa, ProgramaAcademico programa) {
+    public Usuario(Integer id, String email, String contrasena, String nombres, String apellidos, String telefono, boolean cuenta_activa, ProgramaAcademico programa, List<Token> tokens) {
         this.id = id;
         this.email = email;
         this.contrasena = contrasena;
@@ -43,6 +47,7 @@ public class Usuario {
         this.telefono = telefono;
         this.cuenta_activa = cuenta_activa;
         this.programa = programa;
+        this.tokens = tokens;
     }
 
     public Integer getId() {
@@ -107,6 +112,14 @@ public class Usuario {
 
     public void setPrograma(ProgramaAcademico programa) {
         this.programa = programa;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
     }
 }
 

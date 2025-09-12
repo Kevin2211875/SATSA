@@ -15,9 +15,8 @@ public class Rol {
 
     public Rol() {super();}
 
-    public Rol(Integer id, String rolNombre) {
+    public Rol(Integer id) {
         this.id = id;
-        this.rolNombre = rolNombre;
     }
 
     public Integer getId() {
