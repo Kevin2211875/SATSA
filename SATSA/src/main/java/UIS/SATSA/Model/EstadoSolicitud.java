@@ -18,6 +18,10 @@ public class EstadoSolicitud {
 
     public EstadoSolicitud() {super();}
 
+    public EstadoSolicitud(Integer id) {
+        this.id = id;
+    }
+
     public EstadoSolicitud(Integer id, String estadoSolicitud, String descripcion) {
         this.id = id;
         this.estadoSolicitud = estadoSolicitud;

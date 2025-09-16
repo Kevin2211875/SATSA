@@ -1,6 +1,7 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tipo_solicitud")
@@ -15,12 +16,16 @@ public class TipoSolicitud {
     @Column(nullable = false, length = 100)
     private String tipoSolicitud;
 
+    @OneToMany(mappedBy = "tipoSolicitud", cascade = CascadeType.ALL)
+    private List<CampoSolicitud> campos;
+
     public TipoSolicitud() {super();}
 
-    public TipoSolicitud(Integer id, String descripcion, String tipoSolicitud) {
+    public TipoSolicitud(Integer id, String descripcion, String tipoSolicitud, List<CampoSolicitud> campos) {
         this.id = id;
         this.descripcion = descripcion;
         this.tipoSolicitud = tipoSolicitud;
+        this.campos = campos;
     }
 
     public Integer getId() {
@@ -45,5 +50,13 @@ public class TipoSolicitud {
 
     public void setTipoSolicitud(String tipoSolicitud) {
         this.tipoSolicitud = tipoSolicitud;
+    }
+
+    public List<CampoSolicitud> getCampos() {
+        return campos;
+    }
+
+    public void setCampos(List<CampoSolicitud> campos) {
+        this.campos = campos;
     }
 }

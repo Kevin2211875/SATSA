@@ -1,164 +1,92 @@
 package UIS.SATSA.Service;
 
-import UIS.SATSA.Model.Solicitud;
-import UIS.SATSA.Repository.SolicitudReposittory;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
+import UIS.SATSA.DTO.CrearSolicitudRequest;
+import UIS.SATSA.DTO.RespuestaCampoDTO;
+import UIS.SATSA.DTO.SolicitudDTO;
+import UIS.SATSA.Exception.ResourceNotFoundException;
+import UIS.SATSA.Model.*;
+import UIS.SATSA.Repository.*;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class SolicitudService implements SolicitudReposittory {
-    @Override
-    public void flush() {
+@Service
+public class SolicitudService {
 
+    private final SolicitudRepository solicitudRepository;
+    private final TipoSolicitudRepository tipoSolicitudRepository;
+    private final EstadoSolicitudRepository estadoSolicitudRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final RespuestaCampoRepository respuestaCampoRepository;
+
+    @Autowired
+    private CampoSolicitudRepository campoSolicitudRepository;
+
+    public SolicitudService(
+            SolicitudRepository solicitudRepository,
+            TipoSolicitudRepository tipoSolicitudRepository, EstadoSolicitudRepository estadoSolicitudRepository,
+            UsuarioRepository usuarioRepository,
+            RespuestaCampoRepository respuestaCampoRepository) {
+        this.solicitudRepository = solicitudRepository;
+        this.tipoSolicitudRepository = tipoSolicitudRepository;
+        this.estadoSolicitudRepository = estadoSolicitudRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.respuestaCampoRepository = respuestaCampoRepository;
     }
 
-    @Override
-    public <S extends Solicitud> S saveAndFlush(S entity) {
-        return null;
+    @Transactional
+    public Solicitud crearSolicitud(CrearSolicitudRequest request) {
+        Usuario usuario = usuarioRepository.findById(request.getUsuarioId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        TipoSolicitud tipoSolicitud = tipoSolicitudRepository.findById(request.getTipoSolicitudId())
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de solicitud no encontrado"));
+        EstadoSolicitud estado = estadoSolicitudRepository.findById(request.getEstadoId())
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+
+
+
+        Solicitud solicitud = new Solicitud();
+        solicitud.setUsuario(usuario);
+        solicitud.setTipoSolicitud(tipoSolicitud);
+        solicitud.setEstado(estado);
+        solicitud.setDetalle(request.getDetalle());
+        solicitud.setFecha(LocalDateTime.now());
+
+        if (request.getRespuestas() != null) {
+            for (RespuestaCampoDTO r : request.getRespuestas()) {
+                RespuestaCampo respuesta = new RespuestaCampo();
+                respuesta.setValor(r.getValor());
+                respuesta.setSolicitud(solicitud);
+
+                CampoSolicitud campo = campoSolicitudRepository.findById(r.getCampoId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Campo no encontrado con id " + r.getCampoId()));
+                respuesta.setCampo(campo);
+            }
+        }
+
+        return solicitudRepository.save(solicitud);
     }
 
-    @Override
-    public <S extends Solicitud> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return List.of();
-    }
+    @Transactional
+    public SolicitudDTO obtenerSolicitud(Integer solicitudId) {
+        Solicitud solicitud = solicitudRepository.findById(solicitudId)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
 
-    @Override
-    public void deleteAllInBatch(Iterable<Solicitud> entities) {
+        List<RespuestaCampoDTO> respuestas = solicitud.getRespuestas().stream()
+                .map(r -> new RespuestaCampoDTO(r.getCampo().getId(), r.getCampo().getNombreCampo(), r.getValor()))
+                .collect(Collectors.toList());
 
-    }
-
-    @Override
-    public void deleteAllByIdInBatch(Iterable<Integer> integers) {
-
-    }
-
-    @Override
-    public void deleteAllInBatch() {
-
-    }
-
-    @Override
-    public Solicitud getOne(Integer integer) {
-        return null;
-    }
-
-    @Override
-    public Solicitud getById(Integer integer) {
-        return null;
-    }
-
-    @Override
-    public Solicitud getReferenceById(Integer integer) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> Optional<S> findOne(Example<S> example) {
-        return Optional.empty();
-    }
-
-    @Override
-    public <S extends Solicitud> List<S> findAll(Example<S> example) {
-        return List.of();
-    }
-
-    @Override
-    public <S extends Solicitud> List<S> findAll(Example<S> example, Sort sort) {
-        return List.of();
-    }
-
-    @Override
-    public <S extends Solicitud> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> long count(Example<S> example) {
-        return 0;
-    }
-
-    @Override
-    public <S extends Solicitud> boolean exists(Example<S> example) {
-        return false;
-    }
-
-    @Override
-    public <S extends Solicitud, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> S save(S entity) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> List<S> saveAll(Iterable<S> entities) {
-        return List.of();
-    }
-
-    @Override
-    public Optional<Solicitud> findById(Integer integer) {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(Integer integer) {
-        return false;
-    }
-
-    @Override
-    public List<Solicitud> findAll() {
-        return List.of();
-    }
-
-    @Override
-    public List<Solicitud> findAllById(Iterable<Integer> integers) {
-        return List.of();
-    }
-
-    @Override
-    public long count() {
-        return 0;
-    }
-
-    @Override
-    public void deleteById(Integer integer) {
-
-    }
-
-    @Override
-    public void delete(Solicitud entity) {
-
-    }
-
-    @Override
-    public void deleteAllById(Iterable<? extends Integer> integers) {
-
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends Solicitud> entities) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
-    }
-
-    @Override
-    public List<Solicitud> findAll(Sort sort) {
-        return List.of();
-    }
-
-    @Override
-    public Page<Solicitud> findAll(Pageable pageable) {
-        return null;
+        return new SolicitudDTO(
+                solicitud.getId(),
+                solicitud.getTipoSolicitud().getTipoSolicitud(),
+                solicitud.getEstado(),
+                solicitud.getFecha(),
+                respuestas
+        );
     }
 }

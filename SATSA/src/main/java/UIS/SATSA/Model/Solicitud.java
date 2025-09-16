@@ -2,7 +2,10 @@ package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "solicitud")
@@ -16,11 +19,14 @@ public class Solicitud {
     private String detalle;
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDateTime fecha;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipoSolicitud")
+    @JoinColumn(name = "tipo_solicitud_id")
     private TipoSolicitud tipoSolicitud;
+
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RespuestaCampo> respuestas = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -32,11 +38,12 @@ public class Solicitud {
 
     public Solicitud() {super();}
 
-    public Solicitud(Integer id, String detalle, Date fecha, TipoSolicitud tipoSolicitud, Usuario usuario, EstadoSolicitud estado) {
+    public Solicitud(Integer id, String detalle, LocalDateTime fecha, TipoSolicitud tipoSolicitud, List<RespuestaCampo> respuestas, Usuario usuario, EstadoSolicitud estado) {
         this.id = id;
         this.detalle = detalle;
         this.fecha = fecha;
         this.tipoSolicitud = tipoSolicitud;
+        this.respuestas = respuestas;
         this.usuario = usuario;
         this.estado = estado;
     }
@@ -57,11 +64,11 @@ public class Solicitud {
         this.detalle = detalle;
     }
 
-    public Date getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
@@ -71,6 +78,14 @@ public class Solicitud {
 
     public void setTipoSolicitud(TipoSolicitud tipoSolicitud) {
         this.tipoSolicitud = tipoSolicitud;
+    }
+
+    public List<RespuestaCampo> getRespuestas() {
+        return respuestas;
+    }
+
+    public void setRespuestas(List<RespuestaCampo> respuestas) {
+        this.respuestas = respuestas;
     }
 
     public Usuario getUsuario() {
