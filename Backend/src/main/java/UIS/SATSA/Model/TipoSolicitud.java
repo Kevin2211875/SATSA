@@ -1,49 +1,29 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tipo_solicitud")
+@Getter
+@Setter
 public class TipoSolicitud {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 100)
-    private String descripcion;
+    private String nombre;
 
-    @Column(nullable = false, length = 100)
-    private String tipoSolicitud;
+    @Column(columnDefinition = "jsonb", nullable = false)
+    private String campos;
 
     public TipoSolicitud() {super();}
 
-    public TipoSolicitud(Integer id, String descripcion, String tipoSolicitud) {
+    public TipoSolicitud(Integer id, String nombre, String campos) {
         this.id = id;
-        this.descripcion = descripcion;
-        this.tipoSolicitud = tipoSolicitud;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getTipoSolicitud() {
-        return tipoSolicitud;
-    }
-
-    public void setTipoSolicitud(String tipoSolicitud) {
-        this.tipoSolicitud = tipoSolicitud;
+        this.nombre = nombre;
+        this.campos = campos;
     }
 }

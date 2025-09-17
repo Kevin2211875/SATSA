@@ -1,164 +1,100 @@
 package UIS.SATSA.Service;
 
+import UIS.SATSA.DTO.CrearSolicitudRequest;
+import UIS.SATSA.DTO.SolicitudDTO;
 import UIS.SATSA.Model.Solicitud;
-import UIS.SATSA.Repository.SolicitudReposittory;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import UIS.SATSA.Repository.EstadoSolicitudRepository;
+import UIS.SATSA.Repository.SolicitudRepository;
+import UIS.SATSA.Repository.TipoSolicitudRepository;
+import UIS.SATSA.Repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.util.Map;
 
-public class SolicitudService implements SolicitudReposittory {
-    @Override
-    public void flush() {
+@Service
+public class SolicitudService {
 
+    private final EstadoSolicitudRepository estadoSolicitudRepository;
+    private final SolicitudRepository solicitudRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final TipoSolicitudRepository tipoSolicitudRepository;
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    public SolicitudService(EstadoSolicitudRepository estadoSolicitudRepository, SolicitudRepository solicitudRepository,
+                            UsuarioRepository usuarioRepository, TipoSolicitudRepository tipoSolicitudRepository) {
+        this.estadoSolicitudRepository = estadoSolicitudRepository;
+        this.solicitudRepository = solicitudRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.tipoSolicitudRepository = tipoSolicitudRepository;
     }
 
-    @Override
-    public <S extends Solicitud> S saveAndFlush(S entity) {
-        return null;
+    @Transactional
+    public SolicitudDTO crearSolicitud(CrearSolicitudRequest request) {
+        var usuario = usuarioRepository.findById(request.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        var estado = estadoSolicitudRepository.findById(request.getEstadoId())
+                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+
+        var tipo = tipoSolicitudRepository.findById(request.getTipoSolicitudId())
+                .orElseThrow(() -> new RuntimeException("Tipo de solicitud no encontrado"));
+
+        try {
+            // Campos requeridos se obtienen de TipoSolicitud
+            Map<String, Boolean> camposRequeridos =
+                    mapper.readValue(tipo.getCampos(), Map.class);
+
+            Map<String, Object> camposRequest = request.getCampos();
+
+            for (Map.Entry<String, Boolean> entry : camposRequeridos.entrySet()) {
+                if (entry.getValue() && !camposRequest.containsKey(entry.getKey())) {
+                    throw new IllegalArgumentException(
+                            "Falta el campo requerido: " + entry.getKey()
+                    );
+                }
+            }
+
+            // Crear la entidad Solicitud
+            Solicitud solicitud = new Solicitud();
+            solicitud.setUsuario(usuario);
+            solicitud.setTipoSolicitud(tipo);
+            solicitud.setEstado(estado);
+            solicitud.setFechaSolicitud(LocalDateTime.now());
+            solicitud.setDetalle(request.getDetalle()); // texto libre
+            solicitud.setCampos(camposRequest); // JSON dinámico
+
+            Solicitud saved = solicitudRepository.save(solicitud);
+
+            return new SolicitudDTO(
+                    saved.getId(),
+                    saved.getFechaSolicitud(),
+                    saved.getDetalle(),
+                    saved.getCampos(),
+                    saved.getTipoSolicitud().getNombre(),
+                    saved.getEstado().getEstadoSolicitud(),
+                    saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()
+            );
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error procesando JSON de campos requeridos", e);
+        }
     }
 
-    @Override
-    public <S extends Solicitud> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return List.of();
-    }
+    @Transactional
+    public SolicitudDTO buscarSolicitudPorId(String numeroSolicitud) {
+        Solicitud solicitud = solicitudRepository.findByNumeroSolicitud(numeroSolicitud).orElseThrow(()
+                -> new RuntimeException("Solicitud no encontrada"));
 
-    @Override
-    public void deleteAllInBatch(Iterable<Solicitud> entities) {
-
-    }
-
-    @Override
-    public void deleteAllByIdInBatch(Iterable<Integer> integers) {
-
-    }
-
-    @Override
-    public void deleteAllInBatch() {
-
-    }
-
-    @Override
-    public Solicitud getOne(Integer integer) {
-        return null;
-    }
-
-    @Override
-    public Solicitud getById(Integer integer) {
-        return null;
-    }
-
-    @Override
-    public Solicitud getReferenceById(Integer integer) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> Optional<S> findOne(Example<S> example) {
-        return Optional.empty();
-    }
-
-    @Override
-    public <S extends Solicitud> List<S> findAll(Example<S> example) {
-        return List.of();
-    }
-
-    @Override
-    public <S extends Solicitud> List<S> findAll(Example<S> example, Sort sort) {
-        return List.of();
-    }
-
-    @Override
-    public <S extends Solicitud> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> long count(Example<S> example) {
-        return 0;
-    }
-
-    @Override
-    public <S extends Solicitud> boolean exists(Example<S> example) {
-        return false;
-    }
-
-    @Override
-    public <S extends Solicitud, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> S save(S entity) {
-        return null;
-    }
-
-    @Override
-    public <S extends Solicitud> List<S> saveAll(Iterable<S> entities) {
-        return List.of();
-    }
-
-    @Override
-    public Optional<Solicitud> findById(Integer integer) {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(Integer integer) {
-        return false;
-    }
-
-    @Override
-    public List<Solicitud> findAll() {
-        return List.of();
-    }
-
-    @Override
-    public List<Solicitud> findAllById(Iterable<Integer> integers) {
-        return List.of();
-    }
-
-    @Override
-    public long count() {
-        return 0;
-    }
-
-    @Override
-    public void deleteById(Integer integer) {
-
-    }
-
-    @Override
-    public void delete(Solicitud entity) {
-
-    }
-
-    @Override
-    public void deleteAllById(Iterable<? extends Integer> integers) {
-
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends Solicitud> entities) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
-    }
-
-    @Override
-    public List<Solicitud> findAll(Sort sort) {
-        return List.of();
-    }
-
-    @Override
-    public Page<Solicitud> findAll(Pageable pageable) {
-        return null;
+        return new SolicitudDTO(
+                solicitud.getId(),
+                solicitud.getFechaSolicitud(),
+                solicitud.getDetalle(),
+                solicitud.getCampos(),
+                solicitud.getTipoSolicitud().getNombre(),
+                solicitud.getEstado().getEstadoSolicitud(),
+                solicitud.getUsuario().getNombres() + " " + solicitud.getUsuario().getApellidos()
+        );
     }
 }
