@@ -3,25 +3,26 @@ package UIS.SATSA.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class CrearSolicitudRequest {
 
-    private Integer usuarioId;
-    private Integer tipoSolicitudId;
-    private Integer estadoId;
-    private String detalle;
-    private List<RespuestaCampoDTO> respuestas;
+    public Integer usuarioId;
+    public Integer tipoSolicitudId;
+    public Integer estadoId;
+    public String detalle;
+    public Map<String, Object> campos;
 
     public CrearSolicitudRequest() {super();}
 
-    public CrearSolicitudRequest(String detalle, Integer usuarioId, Integer tipoSolicitudId, Integer estadoId, List<RespuestaCampoDTO> respuestas) {
+    public CrearSolicitudRequest(Integer usuarioId, Integer tipoSolicitudId,
+                                 Integer estadoId, String detalle, Map<String, Object> campos) {
         this.usuarioId = usuarioId;
         this.tipoSolicitudId = tipoSolicitudId;
         this.estadoId = estadoId;
-        this.respuestas = respuestas;
         this.detalle = detalle;
+        this.campos = campos;
     }
 }

@@ -2,7 +2,6 @@ package UIS.SATSA.Controller;
 
 import UIS.SATSA.DTO.CrearSolicitudRequest;
 import UIS.SATSA.DTO.SolicitudDTO;
-import UIS.SATSA.Model.Solicitud;
 import UIS.SATSA.Service.SolicitudService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +16,13 @@ public class SolicitudController {
         this.solicitudService = solicitudService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<SolicitudDTO> crearSolicitud(@RequestBody CrearSolicitudRequest request) {
-        Solicitud solicitud = solicitudService.crearSolicitud(request);
-        SolicitudDTO dto = solicitudService.obtenerSolicitud(solicitud.getId());
-        return ResponseEntity.ok(dto);
+    @PostMapping("/crear")
+    public SolicitudDTO crearSolicitud(@RequestBody CrearSolicitudRequest request) {
+        return solicitudService.crearSolicitud(request);
     }
 
-    @GetMapping("/detalle/{id}")
-    public ResponseEntity<SolicitudDTO> obtenerSolicitud(@PathVariable Integer id) {
-        return ResponseEntity.ok(solicitudService.obtenerSolicitud(id));
+    @GetMapping("/detalle/{numeroSolicitud}")
+    public ResponseEntity<SolicitudDTO> obtenerSolicitud(@PathVariable String numeroSolicitud) {
+        return ResponseEntity.ok(solicitudService.buscarSolicitudPorId(numeroSolicitud));
     }
 }

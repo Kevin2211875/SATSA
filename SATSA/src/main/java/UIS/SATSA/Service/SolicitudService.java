@@ -1,92 +1,100 @@
 package UIS.SATSA.Service;
 
 import UIS.SATSA.DTO.CrearSolicitudRequest;
-import UIS.SATSA.DTO.RespuestaCampoDTO;
 import UIS.SATSA.DTO.SolicitudDTO;
-import UIS.SATSA.Exception.ResourceNotFoundException;
-import UIS.SATSA.Model.*;
-import UIS.SATSA.Repository.*;
+import UIS.SATSA.Model.Solicitud;
+import UIS.SATSA.Repository.EstadoSolicitudRepository;
+import UIS.SATSA.Repository.SolicitudRepository;
+import UIS.SATSA.Repository.TipoSolicitudRepository;
+import UIS.SATSA.Repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 public class SolicitudService {
 
-    private final SolicitudRepository solicitudRepository;
-    private final TipoSolicitudRepository tipoSolicitudRepository;
     private final EstadoSolicitudRepository estadoSolicitudRepository;
+    private final SolicitudRepository solicitudRepository;
     private final UsuarioRepository usuarioRepository;
-    private final RespuestaCampoRepository respuestaCampoRepository;
+    private final TipoSolicitudRepository tipoSolicitudRepository;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    @Autowired
-    private CampoSolicitudRepository campoSolicitudRepository;
-
-    public SolicitudService(
-            SolicitudRepository solicitudRepository,
-            TipoSolicitudRepository tipoSolicitudRepository, EstadoSolicitudRepository estadoSolicitudRepository,
-            UsuarioRepository usuarioRepository,
-            RespuestaCampoRepository respuestaCampoRepository) {
-        this.solicitudRepository = solicitudRepository;
-        this.tipoSolicitudRepository = tipoSolicitudRepository;
+    public SolicitudService(EstadoSolicitudRepository estadoSolicitudRepository, SolicitudRepository solicitudRepository,
+                            UsuarioRepository usuarioRepository, TipoSolicitudRepository tipoSolicitudRepository) {
         this.estadoSolicitudRepository = estadoSolicitudRepository;
+        this.solicitudRepository = solicitudRepository;
         this.usuarioRepository = usuarioRepository;
-        this.respuestaCampoRepository = respuestaCampoRepository;
+        this.tipoSolicitudRepository = tipoSolicitudRepository;
     }
 
     @Transactional
-    public Solicitud crearSolicitud(CrearSolicitudRequest request) {
-        Usuario usuario = usuarioRepository.findById(request.getUsuarioId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-        TipoSolicitud tipoSolicitud = tipoSolicitudRepository.findById(request.getTipoSolicitudId())
-                .orElseThrow(() -> new IllegalArgumentException("Tipo de solicitud no encontrado"));
-        EstadoSolicitud estado = estadoSolicitudRepository.findById(request.getEstadoId())
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+    public SolicitudDTO crearSolicitud(CrearSolicitudRequest request) {
+        var usuario = usuarioRepository.findById(request.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        var estado = estadoSolicitudRepository.findById(request.getEstadoId())
+                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
 
+        var tipo = tipoSolicitudRepository.findById(request.getTipoSolicitudId())
+                .orElseThrow(() -> new RuntimeException("Tipo de solicitud no encontrado"));
 
-        Solicitud solicitud = new Solicitud();
-        solicitud.setUsuario(usuario);
-        solicitud.setTipoSolicitud(tipoSolicitud);
-        solicitud.setEstado(estado);
-        solicitud.setDetalle(request.getDetalle());
-        solicitud.setFecha(LocalDateTime.now());
+        try {
+            // Campos requeridos se obtienen de TipoSolicitud
+            Map<String, Boolean> camposRequeridos =
+                    mapper.readValue(tipo.getCampos(), Map.class);
 
-        if (request.getRespuestas() != null) {
-            for (RespuestaCampoDTO r : request.getRespuestas()) {
-                RespuestaCampo respuesta = new RespuestaCampo();
-                respuesta.setValor(r.getValor());
-                respuesta.setSolicitud(solicitud);
+            Map<String, Object> camposRequest = request.getCampos();
 
-                CampoSolicitud campo = campoSolicitudRepository.findById(r.getCampoId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Campo no encontrado con id " + r.getCampoId()));
-                respuesta.setCampo(campo);
+            for (Map.Entry<String, Boolean> entry : camposRequeridos.entrySet()) {
+                if (entry.getValue() && !camposRequest.containsKey(entry.getKey())) {
+                    throw new IllegalArgumentException(
+                            "Falta el campo requerido: " + entry.getKey()
+                    );
+                }
             }
-        }
 
-        return solicitudRepository.save(solicitud);
+            // Crear la entidad Solicitud
+            Solicitud solicitud = new Solicitud();
+            solicitud.setUsuario(usuario);
+            solicitud.setTipoSolicitud(tipo);
+            solicitud.setEstado(estado);
+            solicitud.setFechaSolicitud(LocalDateTime.now());
+            solicitud.setDetalle(request.getDetalle()); // texto libre
+            solicitud.setCampos(camposRequest); // JSON dinámico
+
+            Solicitud saved = solicitudRepository.save(solicitud);
+
+            return new SolicitudDTO(
+                    saved.getId(),
+                    saved.getFechaSolicitud(),
+                    saved.getDetalle(),
+                    saved.getCampos(),
+                    saved.getTipoSolicitud().getNombre(),
+                    saved.getEstado().getEstadoSolicitud(),
+                    saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()
+            );
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error procesando JSON de campos requeridos", e);
+        }
     }
 
     @Transactional
-    public SolicitudDTO obtenerSolicitud(Integer solicitudId) {
-        Solicitud solicitud = solicitudRepository.findById(solicitudId)
-                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
-
-        List<RespuestaCampoDTO> respuestas = solicitud.getRespuestas().stream()
-                .map(r -> new RespuestaCampoDTO(r.getCampo().getId(), r.getCampo().getNombreCampo(), r.getValor()))
-                .collect(Collectors.toList());
+    public SolicitudDTO buscarSolicitudPorId(String numeroSolicitud) {
+        Solicitud solicitud = solicitudRepository.findByNumeroSolicitud(numeroSolicitud).orElseThrow(()
+                -> new RuntimeException("Solicitud no encontrada"));
 
         return new SolicitudDTO(
                 solicitud.getId(),
-                solicitud.getTipoSolicitud().getTipoSolicitud(),
-                solicitud.getEstado(),
-                solicitud.getFecha(),
-                respuestas
+                solicitud.getFechaSolicitud(),
+                solicitud.getDetalle(),
+                solicitud.getCampos(),
+                solicitud.getTipoSolicitud().getNombre(),
+                solicitud.getEstado().getEstadoSolicitud(),
+                solicitud.getUsuario().getNombres() + " " + solicitud.getUsuario().getApellidos()
         );
     }
 }
