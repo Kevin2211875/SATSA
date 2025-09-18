@@ -3,9 +3,15 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
+<<<<<<< HEAD
 import { globalIgnores } from 'eslint/config'
 
 export default tseslint.config([
+=======
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+>>>>>>> 56cba6a (estructura)
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],
