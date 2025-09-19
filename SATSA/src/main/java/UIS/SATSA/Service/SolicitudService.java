@@ -2,6 +2,7 @@ package UIS.SATSA.Service;
 
 import UIS.SATSA.DTO.CrearSolicitudRequest;
 import UIS.SATSA.DTO.SolicitudDTO;
+import UIS.SATSA.Model.EstadoSolicitud;
 import UIS.SATSA.Model.Solicitud;
 import UIS.SATSA.Repository.EstadoSolicitudRepository;
 import UIS.SATSA.Repository.SolicitudRepository;
@@ -11,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -96,5 +99,69 @@ public class SolicitudService {
                 solicitud.getEstado().getEstadoSolicitud(),
                 solicitud.getUsuario().getNombres() + " " + solicitud.getUsuario().getApellidos()
         );
+    }
+
+    @Transactional
+    public List<SolicitudDTO> listarSolicitudes(Integer usuarioId) {
+
+        List<Solicitud> solicitudes = solicitudRepository.listarSolicitudes(usuarioId);
+        List<SolicitudDTO> listaSolicitudes = new ArrayList<>();
+
+        for (Solicitud saved : solicitudes) {
+            listaSolicitudes.add(new SolicitudDTO(
+                    saved.getId(),
+                    saved.getFechaSolicitud(),
+                    saved.getDetalle(),
+                    saved.getCampos(),
+                    saved.getTipoSolicitud().getNombre(),
+                    saved.getEstado().getEstadoSolicitud(),
+                    saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()));
+        }
+
+        return listaSolicitudes;
+    }
+
+    @Transactional
+    public SolicitudDTO emitirRespuesta(CrearSolicitudRequest request, String numeroSolicitud) {
+        Solicitud solicitud = solicitudRepository.findByNumeroSolicitud(numeroSolicitud).orElseThrow(()
+                -> new RuntimeException("Solicitud no encontrada"));
+
+        var estado = estadoSolicitudRepository.findById(request.getEstadoId())
+                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+
+        try {
+            // Campos requeridos se obtienen de TipoSolicitud
+            Map<String, Boolean> camposRequeridos =
+                    mapper.readValue(solicitud.getTipoSolicitud().getCampos(), Map.class);
+
+            Map<String, Object> camposRequest = request.getCampos();
+
+            for (Map.Entry<String, Boolean> entry : camposRequeridos.entrySet()) {
+                if (entry.getValue() && !camposRequest.containsKey(entry.getKey())) {
+                    throw new IllegalArgumentException(
+                            "Falta el campo requerido: " + entry.getKey()
+                    );
+                }
+            }
+
+            // Crear la entidad Solicitud
+            solicitud.setEstado(estado);
+            solicitud.setCampos(camposRequest);
+
+            Solicitud saved = solicitudRepository.save(solicitud);
+
+            return new SolicitudDTO(
+                    saved.getId(),
+                    saved.getFechaSolicitud(),
+                    saved.getDetalle(),
+                    saved.getCampos(),
+                    saved.getTipoSolicitud().getNombre(),
+                    saved.getEstado().getEstadoSolicitud(),
+                    saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()
+            );
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error procesando JSON de campos requeridos", e);
+        }
     }
 }
