@@ -13,10 +13,14 @@ If you are developing a production application, we recommend updating the config
 
 ```js
 <<<<<<< HEAD
+<<<<<<< HEAD
 export default tseslint.config([
 =======
 export default defineConfig([
 >>>>>>> 56cba6a (estructura)
+=======
+export default defineConfig([
+>>>>>>> origin/Erick
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],
@@ -25,18 +29,24 @@ export default defineConfig([
 
       // Remove tseslint.configs.recommended and replace with this
 <<<<<<< HEAD
+<<<<<<< HEAD
       ...tseslint.configs.recommendedTypeChecked,
       // Alternatively, use this for stricter rules
       ...tseslint.configs.strictTypeChecked,
       // Optionally, add this for stylistic rules
       ...tseslint.configs.stylisticTypeChecked,
 =======
+=======
+>>>>>>> origin/Erick
       tseslint.configs.recommendedTypeChecked,
       // Alternatively, use this for stricter rules
       tseslint.configs.strictTypeChecked,
       // Optionally, add this for stylistic rules
       tseslint.configs.stylisticTypeChecked,
+<<<<<<< HEAD
 >>>>>>> 56cba6a (estructura)
+=======
+>>>>>>> origin/Erick
 
       // Other configs...
     ],
@@ -59,10 +69,14 @@ import reactX from 'eslint-plugin-react-x'
 import reactDom from 'eslint-plugin-react-dom'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export default tseslint.config([
 =======
 export default defineConfig([
 >>>>>>> 56cba6a (estructura)
+=======
+export default defineConfig([
+>>>>>>> origin/Erick
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],

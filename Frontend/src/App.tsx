@@ -8,6 +8,7 @@ function App() {
 
   return (
 <<<<<<< HEAD
+<<<<<<< HEAD
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
@@ -33,6 +34,9 @@ function App() {
 =======
     <h1 className=" text-9xl font-bold underline caret-amber-300">      Hello world!    </h1>
 >>>>>>> 56cba6a (estructura)
+=======
+    <h1 className=" text-9xl font-bold underline caret-amber-300">      Hello world!    </h1>
+>>>>>>> origin/Erick
   )
 }
 
