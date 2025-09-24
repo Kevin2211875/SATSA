@@ -1,8 +1,17 @@
-// src/components/solicitudes/SolicitudTypeCard.jsx
+// src/components/solicitudes/SolicitudTypeCard.tsx
 import React from 'react';
 import Card from '../common/Card';
 
-const SolicitudTypeCard = ({ 
+export interface SolicitudTypeCardProps {
+  id: string;
+  title: string;
+  description: string;
+  icon?: React.ReactNode;
+  onClick: (id: string) => void;
+  disabled?: boolean;
+}
+
+const SolicitudTypeCard: React.FC<SolicitudTypeCardProps> = ({ 
   id, 
   title, 
   description, 

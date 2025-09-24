@@ -1,7 +1,15 @@
-// src/components/common/Input.jsx
+// src/components/common/Input.tsx
 import React from 'react';
 
-const Input = ({ 
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  required?: boolean;
+  disabled?: boolean;
+  className?: string;
+}
+
+const Input: React.FC<InputProps> = ({ 
   label, 
   type = 'text', 
   placeholder, 

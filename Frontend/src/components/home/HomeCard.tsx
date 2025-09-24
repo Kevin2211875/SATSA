@@ -1,8 +1,16 @@
-// src/components/home/HomeCard.jsx
+// src/components/home/HomeCard.tsx
 import React from 'react';
 import Card from '../common/Card';
 
-const HomeCard = ({ title, description, features, icon, onClick }) => {
+export interface HomeCardProps {
+  title: string;
+  description: string;
+  features?: string[];
+  icon?: React.ReactNode;
+  onClick?: () => void;
+}
+
+const HomeCard: React.FC<HomeCardProps> = ({ title, description, features, icon, onClick }) => {
   return (
     <Card 
       variant="gray" 

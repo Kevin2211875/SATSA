@@ -1,13 +1,17 @@
-// src/components/layout/Layout.jsx
+// src/components/layout/Layout.tsx
 import React from 'react';
 import Sidebar from './Sidebar';
-import Header from './Header';
 
-const Layout = ({ children, currentPage, setCurrentPage }) => {
+export interface LayoutProps {
+  children: React.ReactNode;
+  currentPage: string;
+  setCurrentPage: (page: string) => void;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }) => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <Header currentPage={currentPage} />
       <main className="ml-20 p-8 bg-gray-50 min-h-screen">
         {children}
       </main>

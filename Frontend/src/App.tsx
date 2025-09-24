@@ -1,43 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import React, { useState } from 'react';
+import Layout from './components/layout/Layout';
+import Home from './pages/Home';
+import CreateSolicitud from './pages/CreateSolicitud';
+import Account from './pages/Account';
+import Notifications from './pages/Notifications';
+import Help from './pages/Help';
+import LoginForm from './components/auth/LoginForm';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('login');
+  const [user, setUser] = useState(null);
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+    setCurrentPage('inicio');
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setCurrentPage('login');
+  };
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'inicio':
+        return <Home setCurrentPage={setCurrentPage} />;
+      case 'crear':
+        return <CreateSolicitud />;
+      case 'cuenta':
+        return <Account user={user} />;
+      case 'notificaciones':
+        return <Notifications />;
+      case 'ayuda':
+        return <Help />;
+      default:
+        return <Home setCurrentPage={setCurrentPage} />;
+    }
+  };
+
+  if (currentPage === 'login') {
+    return <LoginForm onLogin={handleLogin} />;
+  }
 
   return (
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-=======
-    <h1 className=" text-9xl font-bold underline caret-amber-300">      Hello world!    </h1>
->>>>>>> 56cba6a (estructura)
-=======
-    <h1 className=" text-9xl font-bold underline caret-amber-300">      Hello world!    </h1>
->>>>>>> origin/Erick
-  )
+    <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
+      {renderPage()}
+    </Layout>
+  );
 }
 
-export default App
+export default App;

@@ -1,7 +1,8 @@
-// src/components/common/Card.jsx
+// src/components/common/Card.tsx
 import React from 'react';
+import type { CardProps, CardVariant } from '../../types';
 
-const Card = ({ 
+const Card: React.FC<CardProps> = ({ 
   children, 
   title, 
   icon, 
@@ -12,7 +13,7 @@ const Card = ({
 }) => {
   const baseClasses = 'rounded-lg p-6 transition-all';
   
-  const variants = {
+  const variants: Record<CardVariant, string> = {
     default: 'bg-white border border-gray-200 shadow-sm',
     gray: 'bg-gray-200',
     white: 'bg-white shadow-lg',
@@ -24,8 +25,27 @@ const Card = ({
   
   const classes = `${baseClasses} ${variants[variant]} ${hoverClasses} ${clickable} ${className}`;
   
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+  
   return (
-    <div className={classes} onClick={onClick}>
+    <div 
+      className={classes} 
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={onClick ? 0 : undefined}
+      role={onClick ? 'button' : undefined}
+    >
       {(title || icon) && (
         <div className="flex items-center mb-4">
           {icon && <span className="mr-3">{icon}</span>}
