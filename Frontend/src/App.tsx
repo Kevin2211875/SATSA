@@ -1,18 +1,24 @@
-// src/App.jsx
 import React, { useState } from 'react';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import CreateSolicitud from './pages/CreateSolicitud';
-import Account from './pages/Account';
+/* import Account from './pages/Account';
 import Notifications from './pages/Notifications';
-import Help from './pages/Help';
+import Help from './pages/Help'; */
 import LoginForm from './components/auth/LoginForm';
 
-function App() {
-  const [currentPage, setCurrentPage] = useState('login');
-  const [user, setUser] = useState(null);
+// Define el tipo de usuario según tu modelo real
+type User = {
+  id: string;
+  name: string;
+  // agrega más campos según tu modelo de usuario
+};
 
-  const handleLogin = (userData) => {
+function App() {
+  const [currentPage, setCurrentPage] = useState<string>('login');
+  const [user, setUser] = useState<User | null>(null);
+
+  const handleLogin = (userData: User) => {
     setUser(userData);
     setCurrentPage('inicio');
   };
@@ -28,12 +34,12 @@ function App() {
         return <Home setCurrentPage={setCurrentPage} />;
       case 'crear':
         return <CreateSolicitud />;
-      case 'cuenta':
+/*       case 'cuenta':
         return <Account user={user} />;
       case 'notificaciones':
         return <Notifications />;
       case 'ayuda':
-        return <Help />;
+        return <Help />; */
       default:
         return <Home setCurrentPage={setCurrentPage} />;
     }

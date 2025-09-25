@@ -12,31 +12,31 @@ import type { SolicitudType, HomeCard, Step, NotificationType, SolicitudState } 
 
 export const SOLICITUD_TYPES: SolicitudType[] = [
   {
-    id: 'validacion-medica',
-    title: 'VALIDACIÓN MÉDICA PARA SOLICITUDES EXTRAACADEMICAS Y EXTRACURRICULARES',
+    id: 'supletorios',
+    title: 'VALIDACIÓN MEDICA PARA SUPLETORIOS INTRASEMESTRALES O EXCUSAS',
     icon: React.createElement(FileCheck, { className: "w-12 h-12 text-blue-600" }),
-    description: 'Validación médica para actividades fuera del plan académico',
+    description: 'Validación médica para supletorios intrasemestrales o excusas',
     disabled: false
   },
   {
-    id: 'homologacion',
-    title: 'HOMOLOGACIÓN DE ASIGNATURAS CURSADAS EN OTRA INSTITUCIÓN ACADÉMICA',
+    id: 'homologacion-intercambio',
+    title: 'HOMOLOGACIÓN DE ASIGNATURAS CURSADAS EN INTERCAMBIO ACADÉMICO',
     icon: React.createElement(BookOpen, { className: "w-12 h-12 text-green-600" }),
-    description: 'Homologar materias cursadas en otras instituciones',
+    description: 'Homologar materias cursadas en otras instituciones durante intercambio académico',
     disabled: false
   },
   {
-    id: 'duplicacion',
-    title: 'DUPLICACIÓN DE CERTIFICADOS DE OPORTUNIDADES',
+    id: 'ampliacion-permanencia',
+    title: 'AMPLIACIÓN DEL PERIODO DE PERMANENCIA',
     icon: React.createElement(Upload, { className: "w-12 h-12 text-purple-600" }),
-    description: 'Solicitar duplicados de certificados académicos',
+    description: 'Solicitar ampliación del periodo de permanencia académica',
     disabled: true
   },
   {
-    id: 'procedimiento',
-    title: 'PROCEDIMIENTO DE OPORTUNIDADES DE RECUPERACIÓN DE CALIFICACIONES',
+    id: 'readmision-pregrado',
+    title: 'READMISIÓN DE ESTUDIANTES DE PREGRADO DENTRO DE LAS FECHAS ESTABLECIDAS EN EL CALENDARIO ACADÉMICO',
     icon: React.createElement(Calendar, { className: "w-12 h-12 text-orange-600" }),
-    description: 'Solicitar oportunidades de recuperación académica',
+    description: 'Readmisión de estudiantes de pregrado dentro de las fechas establecidas en el calendario académico',
     disabled: false
   }
 ];
@@ -103,12 +103,10 @@ export const NOTIFICATION_TYPES: Record<string, NotificationType> = {
 
 // Estados de solicitudes
 export const SOLICITUD_STATES: Record<string, SolicitudState> = {
-  BORRADOR: 'borrador',
   ENVIADA: 'enviada',
   EN_REVISION: 'en_revision',
   APROBADA: 'aprobada',
   RECHAZADA: 'rechazada',
-  COMPLETADA: 'completada'
 } as const;
 
 // Textos legales por tipo de solicitud

@@ -6,8 +6,8 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type CardVariant = 'default' | 'gray' | 'white' | 'warning';
 export type NotificationType = 'success' | 'warning' | 'info' | 'error';
-export type SolicitudState = 'borrador' | 'enviada' | 'en_revision' | 'aprobada' | 'rechazada' | 'completada';
-export type PageType = 'login' | 'inicio' | 'cuenta' | 'crear' | 'notificaciones' | 'ayuda';
+export type SolicitudState = 'enviada' | 'en_revision' | 'aprobada' | 'rechazada' | 'en_verificacion_externa';
+export type PageType = 'login' | 'inicio' | 'cuenta' | 'crear' | 'notificaciones' | 'ver-solicitud' | 'paso-a-paso';
 
 // Interfaces para componentes
 export interface ButtonProps {
@@ -44,20 +44,23 @@ export interface InputProps {
   className?: string;
 }
 
-// Interfaces para datos de negocio
 export interface User {
   id: string;
-  firstName: string;
+  Name: string;
   lastName: string;
   email: string;
-  username: string;
+  codigo: string;
+  phone: string;
+  programa: string;
+  role: 'Estudiante' | 'Administrador' | 'Profesor' | 'Director' | 'Coordinador' | 'Secretaria';
+  accountActive: boolean;
+  tokens: string;
 }
 
 export interface Subject {
   id: number;
   name: string;
   professor: string;
-  date: string;
   code: string;
   credits: number;
 }
