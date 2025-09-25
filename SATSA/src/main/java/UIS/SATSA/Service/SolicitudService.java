@@ -2,7 +2,6 @@ package UIS.SATSA.Service;
 
 import UIS.SATSA.DTO.CrearSolicitudRequest;
 import UIS.SATSA.DTO.SolicitudDTO;
-import UIS.SATSA.Model.EstadoSolicitud;
 import UIS.SATSA.Model.Solicitud;
 import UIS.SATSA.Repository.EstadoSolicitudRepository;
 import UIS.SATSA.Repository.SolicitudRepository;
@@ -102,9 +101,10 @@ public class SolicitudService {
     }
 
     @Transactional
-    public List<SolicitudDTO> listarSolicitudes(Integer usuarioId) {
+    public List<SolicitudDTO> listarSolicitudes(String codigo) {
 
-        List<Solicitud> solicitudes = solicitudRepository.listarSolicitudes(usuarioId);
+        List<Solicitud> solicitudes = solicitudRepository.listarSolicitudes(codigo);
+        solicitudes = solicitudRepository.listaSolicitudesPrioridad();
         List<SolicitudDTO> listaSolicitudes = new ArrayList<>();
 
         for (Solicitud saved : solicitudes) {

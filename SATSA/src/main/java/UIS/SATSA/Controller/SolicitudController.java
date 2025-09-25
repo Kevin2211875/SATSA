@@ -29,9 +29,9 @@ public class SolicitudController {
         return ResponseEntity.ok(solicitudService.buscarSolicitudPorId(numeroSolicitud));
     }
 
-    @GetMapping("/listarSolicitudes/{usuarioId}")
-    public List<SolicitudDTO> listarSolicitudes(@PathVariable Integer usuarioId) {
-        return solicitudService.listarSolicitudes(usuarioId);
+    @GetMapping("/listarSolicitudes/{codigo}")
+    public List<SolicitudDTO> listarSolicitudes(@PathVariable String codigo) {
+        return solicitudService.listarSolicitudes(codigo);
     }
 
     @PutMapping("/emitirRespuesta/{numeroSolicitud}")

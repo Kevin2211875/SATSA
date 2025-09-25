@@ -3,8 +3,8 @@ package UIS.SATSA.Model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "documentos")
@@ -21,6 +21,9 @@ public class Documento {
 
     @Column(nullable = false)
     private LocalDate fecha;
+
+    @Column
+    private Date fechaModificacion;
 
     @Column(nullable = false, length = 500)
     private String rutaDocumento;

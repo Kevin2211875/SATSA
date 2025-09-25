@@ -1,10 +1,13 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.util.Date;
 
 @Entity
 @Table(name = "historial")
+@Data
 public class Historial {
 
     @Id
@@ -23,42 +26,4 @@ public class Historial {
 
     public Historial() {super();}
 
-    public Historial(Integer id, String comentario, Date fecha, Solicitud solicitud) {
-        this.id = id;
-        this.comentario = comentario;
-        this.fecha = fecha;
-        this.solicitud = solicitud;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public Solicitud getSolicitud() {
-        return solicitud;
-    }
-
-    public void setSolicitud(Solicitud solicitud) {
-        this.solicitud = solicitud;
-    }
 }

@@ -1,13 +1,11 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
 @Table(name = "tipo_solicitud")
-@Getter
-@Setter
+@Data
 public class TipoSolicitud {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +19,4 @@ public class TipoSolicitud {
 
     public TipoSolicitud() {super();}
 
-    public TipoSolicitud(Integer id, String nombre, String campos) {
-        this.id = id;
-        this.nombre = nombre;
-        this.campos = campos;
-    }
 }
