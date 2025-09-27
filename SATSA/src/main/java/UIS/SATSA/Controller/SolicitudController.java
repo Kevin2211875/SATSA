@@ -2,11 +2,9 @@ package UIS.SATSA.Controller;
 
 import UIS.SATSA.DTO.CrearSolicitudRequest;
 import UIS.SATSA.DTO.SolicitudDTO;
-import UIS.SATSA.Model.EstadoSolicitud;
 import UIS.SATSA.Service.SolicitudService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

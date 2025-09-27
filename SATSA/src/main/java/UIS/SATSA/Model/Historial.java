@@ -2,7 +2,6 @@ package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.Date;
 
 @Entity

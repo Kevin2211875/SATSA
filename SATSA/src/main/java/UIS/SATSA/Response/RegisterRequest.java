@@ -6,6 +6,8 @@ public record RegisterRequest(
         String apellidos,
         String correo,
         String contrasena,
-        String telefono
+        String telefono,
+        Integer programa,
+        Integer rol
 ) {
 }

@@ -12,20 +12,19 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Integer> {
     @Query(value = "SELECT * FROM solicitud WHERE campos ->> 'numeroSolicitud' = :numeroSolicitud", nativeQuery = true)
     Optional<Solicitud> findByNumeroSolicitud(@Param("numeroSolicitud") String numeroSolicitud);
 
-    @Query(value = """
-        SELECT s.* 
-        FROM solicitud s
-        JOIN usuario u ON s.id_usuario = u.id
-        WHERE u.codigo = :codigo
-    """, nativeQuery = true)
-    List<Solicitud> listarSolicitudes(@Param("codigo") String codigo);
+    @Query(value = "SELECT * FROM solicitud WHERE id_usuario = :usuarioId", nativeQuery = true)
+    List<Solicitud> listarSolicitudes(@Param("usuarioId") Integer usuarioId);
 
-    @Query(value = "SELECT *\n" +
+    @Query(value = "SELECT s.*\n" +
             "FROM solicitud s\n" +
             "JOIN estado_solicitud e ON s.id_estado = e.id\n" +
             "ORDER BY \n" +
-            "    CASE WHEN e.estado_solicitud  = 'En espera' THEN 1 ELSE 2 END,\n" +
-            "    s.fecha_solicitud ASC;", nativeQuery = true)
+            "    s.fecha_solicitud,  -- primero las más recientes\n" +
+            "    CASE \n" +
+            "        WHEN e.id = 1 THEN 1  -- \"En espera\"\n" +
+            "        WHEN e.id = 2 THEN 2    -- \"Rechazada\"\n" +
+            "        ELSE 5\n" +
+            "    end;", nativeQuery = true)
     List<Solicitud> listaSolicitudesPrioridad();
 
 }

@@ -53,8 +53,8 @@ public class AuthService {
         user.setEmail(request.correo());
         user.setCodigo(request.codigo());
         usuarioRol.setUsuario(user);
-        usuarioRol.setRol(new Rol(4));
-        user.setPrograma(new ProgramaAcademico(1));
+        usuarioRol.setRol(new Rol(request.rol()));
+        user.setPrograma(new ProgramaAcademico(request.programa()));
         user.setContrasena(passwordEncoder.encode(request.contrasena()));
         user.setTokens(new ArrayList<>());
 

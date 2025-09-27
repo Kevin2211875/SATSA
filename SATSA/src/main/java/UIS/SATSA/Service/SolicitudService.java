@@ -3,6 +3,7 @@ package UIS.SATSA.Service;
 import UIS.SATSA.DTO.CrearSolicitudRequest;
 import UIS.SATSA.DTO.SolicitudDTO;
 import UIS.SATSA.Model.Solicitud;
+import UIS.SATSA.Model.Usuario;
 import UIS.SATSA.Repository.EstadoSolicitudRepository;
 import UIS.SATSA.Repository.SolicitudRepository;
 import UIS.SATSA.Repository.TipoSolicitudRepository;
@@ -103,7 +104,10 @@ public class SolicitudService {
     @Transactional
     public List<SolicitudDTO> listarSolicitudes(String codigo) {
 
-        List<Solicitud> solicitudes = solicitudRepository.listarSolicitudes(codigo);
+        Usuario user = usuarioRepository.findByCodigo(codigo).orElseThrow(()
+                -> new RuntimeException("Solicitud no encontrada"));
+
+        List<Solicitud> solicitudes = solicitudRepository.listarSolicitudes(user.getId());
         solicitudes = solicitudRepository.listaSolicitudesPrioridad();
         List<SolicitudDTO> listaSolicitudes = new ArrayList<>();
 
