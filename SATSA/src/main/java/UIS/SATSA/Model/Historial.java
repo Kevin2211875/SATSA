@@ -2,6 +2,9 @@ package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,16 +16,26 @@ public class Historial {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 100)
-    private String comentario;
+    @Column(columnDefinition = "TEXT")
+    private String comentario; // descripción del cambio (opcional, puede ser null)
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha; // mejor usar LocalDateTime que Date
 
     @ManyToOne
-    @JoinColumn(name = "id_solicitud")
+    @JoinColumn(name = "id_solicitud", nullable = false)
     private Solicitud solicitud;
 
-    public Historial() {super();}
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario; // quien hizo el cambio
+
+    @ManyToOne
+    @JoinColumn(name = "estado_anterior")
+    private EstadoSolicitud estadoAnterior;
+
+    @ManyToOne
+    @JoinColumn(name = "estado_nuevo")
+    private EstadoSolicitud estadoNuevo;
 
 }

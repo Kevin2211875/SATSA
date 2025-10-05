@@ -1,7 +1,10 @@
 package UIS.SATSA.Service;
 
 import UIS.SATSA.DTO.CrearSolicitudRequest;
+import UIS.SATSA.DTO.NotificacionDTO;
 import UIS.SATSA.DTO.SolicitudDTO;
+import UIS.SATSA.Model.EstadoSolicitud;
+import UIS.SATSA.Model.Historial;
 import UIS.SATSA.Model.Solicitud;
 import UIS.SATSA.Model.Usuario;
 import UIS.SATSA.Repository.EstadoSolicitudRepository;
@@ -9,14 +12,18 @@ import UIS.SATSA.Repository.SolicitudRepository;
 import UIS.SATSA.Repository.TipoSolicitudRepository;
 import UIS.SATSA.Repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class SolicitudService {
 
     private final EstadoSolicitudRepository estadoSolicitudRepository;
@@ -24,14 +31,8 @@ public class SolicitudService {
     private final UsuarioRepository usuarioRepository;
     private final TipoSolicitudRepository tipoSolicitudRepository;
     private final ObjectMapper mapper = new ObjectMapper();
-
-    public SolicitudService(EstadoSolicitudRepository estadoSolicitudRepository, SolicitudRepository solicitudRepository,
-                            UsuarioRepository usuarioRepository, TipoSolicitudRepository tipoSolicitudRepository) {
-        this.estadoSolicitudRepository = estadoSolicitudRepository;
-        this.solicitudRepository = solicitudRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.tipoSolicitudRepository = tipoSolicitudRepository;
-    }
+    private HistorialService historialService;
+    private NotificacionService notificacionService;
 
     @Transactional
     public SolicitudDTO crearSolicitud(CrearSolicitudRequest request) {
@@ -65,20 +66,13 @@ public class SolicitudService {
             solicitud.setTipoSolicitud(tipo);
             solicitud.setEstado(estado);
             solicitud.setFechaSolicitud(LocalDateTime.now());
+            solicitud.setNumeroSolicitud(request.getNumeroSolicitud());
             solicitud.setDetalle(request.getDetalle()); // texto libre
             solicitud.setCampos(camposRequest); // JSON dinámico
 
             Solicitud saved = solicitudRepository.save(solicitud);
 
-            return new SolicitudDTO(
-                    saved.getId(),
-                    saved.getFechaSolicitud(),
-                    saved.getDetalle(),
-                    saved.getCampos(),
-                    saved.getTipoSolicitud().getNombre(),
-                    saved.getEstado().getEstadoSolicitud(),
-                    saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()
-            );
+            return solicitudToDTO(saved);
 
         } catch (Exception e) {
             throw new RuntimeException("Error procesando JSON de campos requeridos", e);
@@ -90,15 +84,7 @@ public class SolicitudService {
         Solicitud solicitud = solicitudRepository.findByNumeroSolicitud(numeroSolicitud).orElseThrow(()
                 -> new RuntimeException("Solicitud no encontrada"));
 
-        return new SolicitudDTO(
-                solicitud.getId(),
-                solicitud.getFechaSolicitud(),
-                solicitud.getDetalle(),
-                solicitud.getCampos(),
-                solicitud.getTipoSolicitud().getNombre(),
-                solicitud.getEstado().getEstadoSolicitud(),
-                solicitud.getUsuario().getNombres() + " " + solicitud.getUsuario().getApellidos()
-        );
+        return solicitudToDTO(solicitud);
     }
 
     @Transactional
@@ -112,14 +98,7 @@ public class SolicitudService {
         List<SolicitudDTO> listaSolicitudes = new ArrayList<>();
 
         for (Solicitud saved : solicitudes) {
-            listaSolicitudes.add(new SolicitudDTO(
-                    saved.getId(),
-                    saved.getFechaSolicitud(),
-                    saved.getDetalle(),
-                    saved.getCampos(),
-                    saved.getTipoSolicitud().getNombre(),
-                    saved.getEstado().getEstadoSolicitud(),
-                    saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()));
+            listaSolicitudes.add(solicitudToDTO(saved));
         }
 
         return listaSolicitudes;
@@ -130,7 +109,7 @@ public class SolicitudService {
         Solicitud solicitud = solicitudRepository.findByNumeroSolicitud(numeroSolicitud).orElseThrow(()
                 -> new RuntimeException("Solicitud no encontrada"));
 
-        var estado = estadoSolicitudRepository.findById(request.getEstadoId())
+        var estadoNevo = estadoSolicitudRepository.findById(request.getEstadoId())
                 .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
 
         try {
@@ -148,24 +127,33 @@ public class SolicitudService {
                 }
             }
 
+            EstadoSolicitud estadoAnterior = solicitud.getEstado();
+
             // Crear la entidad Solicitud
-            solicitud.setEstado(estado);
+            solicitud.setEstado(estadoNevo);
             solicitud.setCampos(camposRequest);
 
             Solicitud saved = solicitudRepository.save(solicitud);
 
-            return new SolicitudDTO(
-                    saved.getId(),
-                    saved.getFechaSolicitud(),
-                    saved.getDetalle(),
-                    saved.getCampos(),
-                    saved.getTipoSolicitud().getNombre(),
-                    saved.getEstado().getEstadoSolicitud(),
-                    saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()
-            );
+            notificacionService.nofiticaciontoDto(saved, estadoNevo);
+            historialService.HistorialtoDTO(saved, estadoNevo, estadoAnterior);
 
+            return solicitudToDTO(saved);
         } catch (Exception e) {
             throw new RuntimeException("Error procesando JSON de campos requeridos", e);
         }
+    }
+
+    private SolicitudDTO solicitudToDTO(Solicitud saved) {
+        return new SolicitudDTO(
+                saved.getId(),
+                saved.getFechaSolicitud(),
+                saved.getDetalle(),
+                saved.getNumeroSolicitud(),
+                saved.getCampos(),
+                saved.getTipoSolicitud().getNombre(),
+                saved.getEstado().getEstadoSolicitud(),
+                saved.getUsuario().getNombres() + " " + saved.getUsuario().getApellidos()
+        );
     }
 }

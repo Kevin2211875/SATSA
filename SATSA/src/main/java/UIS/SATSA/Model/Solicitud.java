@@ -19,8 +19,11 @@ public class Solicitud {
     @Column(nullable = false)
     private LocalDateTime fechaSolicitud;
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String detalle; //Razon de la ausencia
+
+    @Column(nullable = false, length = 100)
+    private String numeroSolicitud;
 
     @ManyToOne
     @JoinColumn(name = "tipo_solicitud_id")

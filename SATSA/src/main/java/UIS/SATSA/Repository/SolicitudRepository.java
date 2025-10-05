@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SolicitudRepository extends JpaRepository<Solicitud, Integer> {
-    @Query(value = "SELECT * FROM solicitud WHERE campos ->> 'numeroSolicitud' = :numeroSolicitud", nativeQuery = true)
+    @Query(value = "SELECT * FROM solicitud s WHERE s.numero_solicitud = :numeroSolicitud", nativeQuery = true)
     Optional<Solicitud> findByNumeroSolicitud(@Param("numeroSolicitud") String numeroSolicitud);
 
     @Query(value = "SELECT * FROM solicitud WHERE id_usuario = :usuarioId", nativeQuery = true)
