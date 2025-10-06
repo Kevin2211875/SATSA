@@ -1,22 +1,27 @@
-// src/components/layout/Layout.tsx
-import React from 'react';
-import Sidebar from './Sidebar';
+import React, { useState } from "react";
+import Sidebar from "./Sidebar";
+import type { PageType, LayoutProps} from "../../types";
 
-export interface LayoutProps {
-  children: React.ReactNode;
-  currentPage: string;
-  setCurrentPage: (page: string) => void;
-}
+const Layout: React.FC<LayoutProps> = ({ currentPage, setCurrentPage, children }) => {
+  const [expanded, setExpanded] = useState(false);
 
-const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurrentPage }) => {
-  return (
-    <div className="bg-gray-50 min-h-screen">
-      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <main className="ml-20 p-8 bg-gray-50 min-h-screen">
-        {children}
-      </main>
-    </div>
-  );
+    return (
+  <div className="relative h-screen w-screen bg-app box-border overflow-hidden flex p-2">
+        {/* Sidebar fijo */}
+        <Sidebar
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          expanded={expanded}
+          setExpanded={setExpanded}
+          className="h-full w-20 min-w-20"
+        />
+        {/* Main ocupa el resto */}
+        <div className="flex-1 h-full ml-20 flex">
+          <main className="flex-1 h-full bg-transparent rounded-2xl shadow-lg overflow-hidden p-8">
+            {children}
+          </main>
+        </div>
+      </div>
+    );
 };
-
 export default Layout;

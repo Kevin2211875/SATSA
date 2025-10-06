@@ -1,72 +1,65 @@
 // src/components/layout/Sidebar.tsx
-import React from 'react';
-import { 
-  FileText, 
-  User, 
-  Plus, 
-  Bell, 
-  HelpCircle 
-} from 'lucide-react';
+import React from "react";
+import { FileText, User, Plus, Bell, HelpCircle } from "lucide-react";
+import type { SidebarProps, PageType } from "../../types";
 
-export interface SidebarProps {
-  currentPage: string;
-  setCurrentPage: (page: string) => void;
+interface MenuItem {
+  id: PageType;
+  label: string;
+  icon: any;
 }
 
-interface SidebarItemProps {
-  item: { id: string; label: string; icon: React.ElementType };
-  isActive: boolean;
-  onClick: () => void;
-}
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ item, isActive, onClick }) => {
-  const Icon = item.icon;
-  return (
-    <button
-      onClick={onClick}
-      className={`w-12 h-12 rounded-lg mb-4 flex items-center justify-center transition-colors group relative ${
-        isActive 
-          ? 'bg-blue-700 text-white' 
-          : 'text-blue-200 hover:bg-blue-800 hover:text-white'
-      }`}
-      title={item.label}
-    >
-      <Icon size={20} />
-      {/* Tooltip */}
-      <div className="absolute left-16 bg-gray-800 text-white px-2 py-1 rounded text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-        {item.label}
-      </div>
-    </button>
-  );
-};
+const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, expanded, setExpanded }) => {
 
-const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage }) => {
-  const menuItems = [
-    { id: 'inicio', label: 'Inicio', icon: FileText },
-    { id: 'cuenta', label: 'Cuenta', icon: User },
-    { id: 'crear', label: 'Crear solicitud', icon: Plus },
-    { id: 'notificaciones', label: 'Notificaciones', icon: Bell },
-    { id: 'ayuda', label: 'Ayuda', icon: HelpCircle }
+
+  const menuItems: MenuItem[] = [
+    { id: "inicio", label: "Inicio", icon: FileText },
+    { id: "cuenta", label: "Cuenta", icon: User },
+    { id: "crear", label: "Crear solicitud", icon: Plus },
+    { id: "notificaciones", label: "Notificaciones", icon: Bell },
+    { id: "ayuda", label: "Ayuda", icon: HelpCircle },
   ];
 
   return (
-    <div className="bg-blue-900 text-white h-screen w-20 flex flex-col items-center py-6 fixed left-0 top-0 z-40">
-      {/* Logo */}
-      <div className="bg-white text-blue-900 rounded-lg p-3 mb-8">
-        <FileText size={24} />
+    <nav
+      className={`bg-app-primary text-white h-full ${expanded ? "w-70" : "w-24"} flex flex-col py-6 p-4 transition-all duration-200 rounded-[10px]`}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
+    >
+      {/* LOGO */}
+      <div className="flex items-center justify-center mb-8 px-3 space-x-4">
+        <img
+          src="/src/assets/logoEISI.png"
+          alt="Logo"
+          className="rounded-lg p-1 "
+        />
+        {expanded && <span className="justify-start text-white text-4xl font-normal font-['Roboto'] text-shadow text-stroke">SATSA</span>}
       </div>
-      {/* Menu Items */}
-      <nav className="flex flex-col">
-        {menuItems.map((item) => (
-          <SidebarItem
-            key={item.id}
-            item={item}
-            isActive={currentPage === item.id}
-            onClick={() => setCurrentPage(item.id)}
-          />
-        ))}
-      </nav>
-    </div>
+
+      {/* MENU */}
+      <div className={`flex flex-col flex-1 space-y-2 justify-start gap-5 ${expanded ? "items-start px-4" : "items-center"
+        }`}>
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = currentPage === item.id;
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => setCurrentPage(item.id)}
+              className={`flex items-center px-4 py-2 rounded-lg transition-colors
+                ${isActive ? "bg-blue-700 text-white " : "text-blue-200 hover:bg-blue-800 hover:text-white"}
+                ${expanded ? "w-full justify-start" : "w-auto justify-center"}
+              `}
+            >
+              <Icon size={20} />
+              {expanded && <span className="ml-3">{item.label}</span>}
+            </button>
+          );
+        })}
+      </div>
+    </nav>
   );
 };
 

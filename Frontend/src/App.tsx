@@ -8,13 +8,15 @@ import CreateSolicitud from './pages/CreateSolicitud';
 // import Help from './pages/Help';
 import LoginForm from './components/auth/LoginForm';
 
+import type { PageType } from './types'; // Make sure this import exists and is correct
+
 function App() {
-  const [currentPage, setCurrentPage] = useState('login');
+  const [currentPage, setCurrentPage] = useState<PageType>('inicio');
   const [user, setUser] = useState(null);
 
   const handleLogin = (userData: any) => {
     setUser(userData);
-    setCurrentPage('inicio');
+    setCurrentPage('crear');
   };
 
   const handleLogout = () => {

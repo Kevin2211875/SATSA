@@ -1,6 +1,6 @@
 // src/pages/CreateSolicitud.tsx
 import React from 'react';
-import Card from '../components/common/Card';
+import AlertBanner from '../components/common/AlertBanner';
 import SolicitudTypeCard from '../components/solicitudes/SolicitudTypeCard';
 import { SOLICITUD_TYPES } from '../utils/constants';
 
@@ -12,15 +12,12 @@ const CreateSolicitud: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* Warning Banner */}
-      <Card variant="warning" hover={false} className="mb-8">
-        <div className="flex items-center">
-          <span className="text-red-600 mr-2">⚠️</span>
-          <span className="text-red-700 text-sm">
-            No hay ningún programa activo para solicitud de becas en este momento.
-          </span>
-        </div>
-      </Card>
+      {/* Alerta de advertencia */}
+      <AlertBanner 
+        message="Para que su solicitud sea gestionada con éxito, también debe hacerlo por el módulo de estudiantes." 
+        type="error"
+        duration={8000} // opcional: se cierra en 8 segundos
+      />
 
       <h2 className="text-2xl font-bold text-gray-800 mb-8">Crear solicitudes</h2>
       
