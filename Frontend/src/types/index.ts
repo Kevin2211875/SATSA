@@ -122,6 +122,9 @@ export interface FAQ {
 export interface SidebarProps {
   currentPage: PageType;
   setCurrentPage: (page: PageType) => void;
+  expanded: boolean;
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  className?: string;
 }
 
 export interface HeaderProps {
@@ -129,9 +132,9 @@ export interface HeaderProps {
 }
 
 export interface LayoutProps {
-  children: ReactNode;
   currentPage: PageType;
   setCurrentPage: (page: PageType) => void;
+  children: React.ReactNode;
 }
 
 export interface HomeCardProps extends Omit<HomeCard, 'id'> {

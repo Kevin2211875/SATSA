@@ -3,8 +3,9 @@ import React from 'react';
 import HomeCard from '../components/home/HomeCard';
 import { HOME_CARDS, PASO_A_PASO_CARD } from '../utils/constants';
 
+import type { PageType } from '../types';
 export interface HomeProps {
-  setCurrentPage: (page: string) => void;
+  setCurrentPage: (page: PageType) => void;
 }
 
 const Home: React.FC<HomeProps> = ({ setCurrentPage }) => {
@@ -17,10 +18,11 @@ const Home: React.FC<HomeProps> = ({ setCurrentPage }) => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-800 mb-8 border-b-2 border-blue-600 pb-2">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-8 border-b-2 border-blue-600 pb-2">
         Inicio
-      </h2>
-      
+        </h2>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {HOME_CARDS.map((card) => (
           <HomeCard
