@@ -23,7 +23,7 @@ export const SOLICITUD_TYPES: SolicitudType[] = [
     title: 'HOMOLOGACIÓN DE ASIGNATURAS CURSADAS EN INTERCAMBIO ACADÉMICO',
     icon: React.createElement(BookOpen, { className: "w-12 h-12 text-green-600" }),
     description: 'Homologar materias cursadas en otras instituciones durante intercambio académico',
-    disabled: false
+    disabled: true
   },
   {
     id: 'ampliacion-permanencia',
@@ -37,7 +37,7 @@ export const SOLICITUD_TYPES: SolicitudType[] = [
     title: 'READMISIÓN DE ESTUDIANTES DE PREGRADO DENTRO DE LAS FECHAS ESTABLECIDAS EN EL CALENDARIO ACADÉMICO',
     icon: React.createElement(Calendar, { className: "w-12 h-12 text-orange-600" }),
     description: 'Readmisión de estudiantes de pregrado dentro de las fechas establecidas en el calendario académico',
-    disabled: false
+    disabled: true
   }
 ];
 

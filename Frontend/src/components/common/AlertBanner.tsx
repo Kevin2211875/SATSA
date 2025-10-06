@@ -29,8 +29,9 @@ const AlertBanner: React.FC<AlertBannerProps> = ({ message, type = "warning", du
 
   return (
     <div
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-3xl border rounded-md shadow-lg p-4 flex items-center justify-between ${typeStyles[type]}`}
+      className={`fixed top-4 right-4 z-50 inline-flex border rounded-md shadow-lg p-4 items-center justify-between ${typeStyles[type]}`}
     >
+
       <span className="text-sm">{message}</span>
       <button
         onClick={() => setVisible(false)}
