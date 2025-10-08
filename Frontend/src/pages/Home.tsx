@@ -29,7 +29,7 @@ const Home: React.FC<HomeProps> = ({ setCurrentPage }) => {
 
         {/* Contenedor centrado */}
         <div className="flex-1 flex justify-center items-center px-6 pb-8">
-          <div className="flex flex-col justify-center items-center gap-10 space-y-[10%]">
+          <div className="flex flex-col justify-center items-center gap-10">
             {/* Tarjetas principales */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {HOME_CARDS.map((card) => (
@@ -42,16 +42,6 @@ const Home: React.FC<HomeProps> = ({ setCurrentPage }) => {
                   onClick={() => handleCardClick(card.id)}
                 />
               ))}
-            </div>
-
-            {/* Tarjeta inferior */}
-            <div>
-              <HomeCard
-                title={PASO_A_PASO_CARD.title}
-                description={PASO_A_PASO_CARD.description}
-                features={PASO_A_PASO_CARD.features}
-                icon={PASO_A_PASO_CARD.icon}
-              />
             </div>
           </div>
         </div>

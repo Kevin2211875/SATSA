@@ -1,12 +1,12 @@
 // src/utils/constants.ts
 import React from 'react';
-import { 
-  FileCheck, 
-  BookOpen, 
-  Upload, 
+import {
+  FileCheck,
+  BookOpen,
+  Upload,
   Calendar,
   Menu,
-  PlusCircle 
+  PlusCircle
 } from 'lucide-react';
 import type { SolicitudType, HomeCard, Step, NotificationType, SolicitudState } from '../types';
 
@@ -62,6 +62,17 @@ export const HOME_CARDS: HomeCard[] = [
       'Crear una nueva solicitud.',
       'Especificar detalles y observaciones.',
       'Adjuntar documentos de soporte.'
+    ]
+  },
+  {
+    id: 'paso-a-paso',
+    title: 'Paso a paso',
+    description: 'Visualiza las instrucciones de cómo crear tu solicitud',
+    icon: React.createElement(Menu, { className: "text-gray-600", size: 24 }),
+    features: [
+      'Acceder a una guía interactiva.',
+      'Seguir las instrucciones para diligenciar su solicitud.',
+      'Conocer los documentos necesarios para cada trámite.'
     ]
   }
 ];
