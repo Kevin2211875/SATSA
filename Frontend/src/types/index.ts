@@ -44,26 +44,146 @@ export interface InputProps {
   className?: string;
 }
 
-export interface User {
-  id: string;
-  Name: string;
-  lastName: string;
-  email: string;
-  codigo: string;
-  phone: string;
-  programa: string;
-  role: 'Estudiante' | 'Administrador' | 'Profesor' | 'Director' | 'Coordinador' | 'Secretaria';
-  accountActive: boolean;
-  tokens: string;
+export interface SelectTypeProps {
+  tipos: TipoSolicitud[];
+  onSelect: (id: number) => void;
 }
 
-export interface Subject {
-  id: number;
-  name: string;
-  professor: string;
-  code: string;
-  credits: number;
+export interface FormularioProps {
+  tipo: TipoSolicitud;
+  onBack: () => void;
 }
+
+export interface InformationProps {
+  tipo: TipoSolicitud;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+// Interfaces de las tablas de la base de datos
+export interface Asignatura {
+  id: number;
+  codigo: string;
+  nombre: string;
+}
+
+export interface Profesor {
+  id: number;
+  apellidos: string;
+  correo: string;
+  nombres: string;
+}
+
+export interface ProgramaAcademico {
+  id: number;
+  codigo_programa: string;
+  nombre: string;
+}
+
+export interface Rol {
+  id: number;
+  rol_nombre: string;
+}
+
+export interface EstadoSolicitud {
+  id: number;
+  descripcion: string;
+  estado_solicitud: string;
+}
+
+// --- Entidades relacionadas ---
+
+export interface Usuario {
+  id: number;
+  apellidos: string;
+  codigo: string;
+  contrasena: string;
+  cuenta_activa: boolean;
+  correo: string;
+  nombres: string;
+  telefono: string;
+  id_programa: number;
+  programa?: ProgramaAcademico;
+}
+
+export interface UsuarioRol {
+  id: number;
+  rol_activo: boolean;
+  id_rol: number;
+  id_usuario: number;
+  rol?: Rol;
+  usuario?: Usuario;
+}
+
+export interface Grupo {
+  id: number;
+  codigo: string;
+  id_asignatura: number;
+  id_profesor: number;
+  asignatura?: Asignatura;
+  profesor?: Profesor;
+}
+
+export interface Solicitud {
+  id: number;
+  campos: Record<string, any>;
+  detalle: string;
+  fecha_solicitud: string; // timestamp sin zona horaria → string ISO
+  numero_solicitud: string;
+  id_estado: number;
+  tipo_solicitud_id: number;
+  id_usuario: number;
+
+  estado?: EstadoSolicitud;
+  tipoSolicitud?: TipoSolicitud;
+  usuario?: Usuario;
+}
+
+export interface Documentos {
+  id: number;
+  fecha: string; // date → string ISO
+  fecha_modificacion?: string | null;
+  nombre: string;
+  ruta_documento: string;
+  id_solicitud: number;
+  solicitud?: Solicitud;
+}
+
+export interface Historial {
+  id: number;
+  comentario?: string;
+  fecha: string;
+  estado_anterior?: number | null;
+  estado_nuevo?: number | null;
+  id_solicitud: number;
+  id_usuario: number;
+
+  estadoAnterior?: EstadoSolicitud;
+  estadoNuevo?: EstadoSolicitud;
+  solicitud?: Solicitud;
+  usuario?: Usuario;
+}
+
+export interface Notificacion {
+  id: number;
+  fecha: string;
+  nuevo_estado: string;
+  numero_solicitud: string;
+  tipo_solicitud: string;
+  usuario_email: string;
+  usuario_id: number;
+}
+
+export interface Token {
+  id: number;
+  is_expired: boolean;
+  is_revoked: boolean;
+  token: string;
+  token_type: 'BEARER';
+  id_usuario: number;
+  usuario?: Usuario;
+}
+
 
 export interface UploadedFile {
   id: string | number;
@@ -74,12 +194,12 @@ export interface UploadedFile {
   uploaded: boolean;
 }
 
-export interface SolicitudType {
-  id: string;
-  title: string;
-  icon: ReactNode;
-  description: string;
+export interface TipoSolicitud {
+  id: number;
+  nombre: string;
+  informacion: string;
   disabled: boolean;
+  campos: Record<string, any>;
 }
 
 export interface HomeCard {
@@ -88,15 +208,6 @@ export interface HomeCard {
   description: string;
   icon: ReactNode;
   features: string[];
-}
-
-export interface Notification {
-  id: number;
-  title: string;
-  message: string;
-  type: NotificationType;
-  date: string;
-  read: boolean;
 }
 
 export interface Step {
@@ -110,12 +221,6 @@ export interface SolicitudFormData {
   fechaAsignatura: string;
   observaciones: string;
   documentos: UploadedFile[];
-}
-
-export interface FAQ {
-  id: number;
-  question: string;
-  answer: string;
 }
 
 // Props para componentes específicos
@@ -137,17 +242,23 @@ export interface LayoutProps {
   children: React.ReactNode;
 }
 
+export interface  CreateSolicitudProps {
+  children: React.ReactNode;
+}
 export interface HomeCardProps extends Omit<HomeCard, 'id'> {
   onClick?: () => void;
 }
 
-export interface SolicitudTypeCardProps extends Omit<SolicitudType, 'icon'> {
-  icon: ReactNode;
+export interface SolicitudTypeCardProps {
+  id: string;
+  title: string;
+  description: string;
   onClick: (id: string) => void;
+  disabled?: boolean;
 }
 
 export interface LoginFormProps {
-  onLogin: (userData: User) => void;
+  onLogin: (userData: Usuario) => void;
 }
 
 export interface DatePickerProps {
@@ -179,14 +290,14 @@ export interface DocumentUploadProps {
 export interface FormExamProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (subject: Subject) => void;
+  onSelect: (subject: Asignatura) => void;
 }
 
 export interface SolicitudFormProps {
-  solicitudType: SolicitudType;
+  solicitudType: TipoSolicitud;
   onSubmit: (formData: SolicitudFormData) => void;
   onBack: () => void;
-  selectedSubject?: Subject | null;
+  selectedSubject?: Asignatura | null;
   onOpenFormExam?: () => void;
 }
 
@@ -196,7 +307,7 @@ export interface HomeProps {
 }
 
 export interface AccountProps {
-  user?: User | null;
+  user?: Usuario | null;
 }
 
 export interface CreateSolicitudProps {
@@ -211,7 +322,7 @@ export interface FormErrors {
 // Tipos para estado de la aplicación
 export interface AppState {
   currentPage: PageType;
-  user: User | null;
+  user: Usuario | null;
   notifications: Notification[];
 }
 

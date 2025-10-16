@@ -8,9 +8,9 @@ import {
   Menu,
   PlusCircle
 } from 'lucide-react';
-import type { SolicitudType, HomeCard, Step, NotificationType, SolicitudState } from '../types';
+import type { HomeCard, Step, NotificationType, SolicitudState } from '../types';
 
-export const SOLICITUD_TYPES: SolicitudType[] = [
+export const SOLICITUD_TYPES = [
   {
     id: 'supletorios',
     title: 'VALIDACIÓN MEDICA PARA SUPLETORIOS INTRASEMESTRALES O EXCUSAS',

@@ -1,21 +1,12 @@
 // src/components/solicitudes/SolicitudTypeCard.tsx
 import React from 'react';
 import Card from '../common/Card';
-
-export interface SolicitudTypeCardProps {
-  id: string;
-  title: string;
-  description: string;
-  icon?: React.ReactNode;
-  onClick: (id: string) => void;
-  disabled?: boolean;
-}
+import type { SolicitudTypeCardProps } from '../../types';
 
 const SolicitudTypeCard: React.FC<SolicitudTypeCardProps> = ({ 
   id, 
   title, 
   description, 
-  icon, 
   onClick,
   disabled = false 
 }) => {
@@ -26,9 +17,6 @@ const SolicitudTypeCard: React.FC<SolicitudTypeCardProps> = ({
       className={`h-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       <div className="flex flex-col items-center text-center">
-        <div className="mb-4">
-          {icon}
-        </div>
         <h4 className="text-sm font-semibold text-gray-800 mb-2 leading-tight">
           {title}
         </h4>

@@ -1,45 +1,77 @@
-// src/pages/CreateSolicitud.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AlertBanner from '../components/common/AlertBanner';
-import SolicitudTypeCard from '../components/solicitudes/SolicitudTypeCard';
-import { SOLICITUD_TYPES } from '../utils/constants';
+import SelectType from '../components/solicitudes/SelectType';
+import Informacion from '../components/solicitudes/Information';
+import Formulario from '../components/solicitudes/Form';
+import axios from 'axios';
+import type { TipoSolicitud } from '../types';
 
 const CreateSolicitud: React.FC = () => {
-  const handleSolicitudClick = (solicitudId: string) => {
-    console.log('Solicitud seleccionada:', solicitudId);
-    // Aquí puedes agregar la lógica para manejar la selección
+  const [step, setStep] = useState(1);
+  const [tipos, setTipos] = useState<TipoSolicitud[]>([]);
+  const [tipoSeleccionado, setTipoSeleccionado] = useState<TipoSolicitud | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 🔹 Obtener todos los tipos de solicitud desde el backend
+  useEffect(() => {
+    const fetchTipos = async () => {
+      try {
+        // ✅ Axios ya lanza error si el status no es 2xx
+        const response = await axios.get<TipoSolicitud[]>('http://localhost:8080/api/solicitudes/tipos');
+        setTipos(response.data);
+      } catch (err) {
+        console.error('Error al obtener tipos de solicitud:', err);
+        setError('No se pudieron cargar los tipos de solicitud');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTipos();
+  }, []);
+
+  const handleSelectType = (id: number) => {
+    const seleccionado = tipos.find((t) => t.id === id) || null;
+    setTipoSeleccionado(seleccionado);
+    setStep(2);
   };
+
+  const handleNext = () => setStep((prev) => prev + 1);
+  const handleBack = () => setStep((prev) => prev - 1);
+
+  if (loading) {
+    return <p className="text-center text-gray-600 mt-8">Cargando tipos de solicitud...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500 mt-8">{error}</p>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* Alerta de advertencia */}
-      <AlertBanner 
-        message="Para que su solicitud sea gestionada con éxito, también debe hacerlo por el módulo de estudiantes." 
+      <AlertBanner
+        message="Para que su solicitud sea gestionada con éxito, también debe hacerlo por el módulo de estudiantes."
         type="error"
-        duration={8000} // opcional: se cierra en 8 segundos
+        duration={8000}
       />
 
       <h2 className="text-2xl font-bold text-gray-800 mb-8">Crear solicitudes</h2>
-      
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">
-          Selecciona el tipo de solicitud
-        </h3>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {SOLICITUD_TYPES.map((type) => (
-          <SolicitudTypeCard
-            key={type.id}
-            id={type.id}
-            title={type.title}
-            description={type.description}
-            icon={type.icon}
-            disabled={type.disabled}
-            onClick={handleSolicitudClick}
-          />
-        ))}
-      </div>
+      {step === 1 && <SelectType tipos={tipos} onSelect={handleSelectType} />}
+      {step === 2 && tipoSeleccionado && (
+        <Informacion
+          tipo={tipoSeleccionado}
+          onNext={handleNext}
+          onBack={handleBack}
+        />
+      )}
+      {step === 3 && tipoSeleccionado && (
+        <Formulario
+          tipo={tipoSeleccionado}
+          onBack={handleBack}
+        />
+      )}
     </div>
   );
 };
