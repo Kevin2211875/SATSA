@@ -1,43 +1,164 @@
 package UIS.SATSA.Service;
 
-import UIS.SATSA.DTO.NotificacionDTO;
-import UIS.SATSA.Model.EstadoSolicitud;
 import UIS.SATSA.Model.Notificacion;
-import UIS.SATSA.Model.Solicitud;
 import UIS.SATSA.Repository.NotificacionRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
-@Service
-@AllArgsConstructor
-public class NotificacionService  {
-    private NotificacionRepository notificacionRepository;
-    private final RabbitTemplate rabbitTemplate;
+public class NotificacionService implements NotificacionRepository {
+    @Override
+    public void flush() {
 
-    public NotificacionDTO nofiticaciontoDto(Solicitud solicitud, EstadoSolicitud estadoNevo) {
+    }
 
-        Notificacion notificacion = new Notificacion();
-        notificacion.setUsuarioId(solicitud.getUsuario().getId());
-        notificacion.setUsuarioEmail(solicitud.getUsuario().getEmail());
-        notificacion.setNumeroSolicitud(solicitud.getNumeroSolicitud());
-        notificacion.setTipoSolicitud(solicitud.getTipoSolicitud().getNombre());
-        notificacion.setNuevoEstado(estadoNevo.getEstadoSolicitud());
-        notificacion.setFecha(LocalDate.now());
-        notificacionRepository.save(notificacion);
+    @Override
+    public <S extends Notificacion> S saveAndFlush(S entity) {
+        return null;
+    }
 
-        NotificacionDTO notificacionDTO = new NotificacionDTO(
-                solicitud.getUsuario().getId(),
-                solicitud.getUsuario().getEmail(),
-                (String) solicitud.getNumeroSolicitud(),
-                solicitud.getTipoSolicitud().getNombre(),
-                estadoNevo.getEstadoSolicitud(),
-                LocalDate.now()
-        );
+    @Override
+    public <S extends Notificacion> List<S> saveAllAndFlush(Iterable<S> entities) {
+        return List.of();
+    }
 
-        rabbitTemplate.convertAndSend("notificaciones.exchange", "solicitud.estado", notificacionDTO);
+    @Override
+    public void deleteAllInBatch(Iterable<Notificacion> entities) {
 
-        return notificacionDTO;
+    }
+
+    @Override
+    public void deleteAllByIdInBatch(Iterable<Integer> integers) {
+
+    }
+
+    @Override
+    public void deleteAllInBatch() {
+
+    }
+
+    @Override
+    public Notificacion getOne(Integer integer) {
+        return null;
+    }
+
+    @Override
+    public Notificacion getById(Integer integer) {
+        return null;
+    }
+
+    @Override
+    public Notificacion getReferenceById(Integer integer) {
+        return null;
+    }
+
+    @Override
+    public <S extends Notificacion> Optional<S> findOne(Example<S> example) {
+        return Optional.empty();
+    }
+
+    @Override
+    public <S extends Notificacion> List<S> findAll(Example<S> example) {
+        return List.of();
+    }
+
+    @Override
+    public <S extends Notificacion> List<S> findAll(Example<S> example, Sort sort) {
+        return List.of();
+    }
+
+    @Override
+    public <S extends Notificacion> Page<S> findAll(Example<S> example, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public <S extends Notificacion> long count(Example<S> example) {
+        return 0;
+    }
+
+    @Override
+    public <S extends Notificacion> boolean exists(Example<S> example) {
+        return false;
+    }
+
+    @Override
+    public <S extends Notificacion, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public <S extends Notificacion> S save(S entity) {
+        return null;
+    }
+
+    @Override
+    public <S extends Notificacion> List<S> saveAll(Iterable<S> entities) {
+        return List.of();
+    }
+
+    @Override
+    public Optional<Notificacion> findById(Integer integer) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsById(Integer integer) {
+        return false;
+    }
+
+    @Override
+    public List<Notificacion> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public List<Notificacion> findAllById(Iterable<Integer> integers) {
+        return List.of();
+    }
+
+    @Override
+    public long count() {
+        return 0;
+    }
+
+    @Override
+    public void deleteById(Integer integer) {
+
+    }
+
+    @Override
+    public void delete(Notificacion entity) {
+
+    }
+
+    @Override
+    public void deleteAllById(Iterable<? extends Integer> integers) {
+
+    }
+
+    @Override
+    public void deleteAll(Iterable<? extends Notificacion> entities) {
+
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+
+    @Override
+    public List<Notificacion> findAll(Sort sort) {
+        return List.of();
+    }
+
+    @Override
+    public Page<Notificacion> findAll(Pageable pageable) {
+        return null;
     }
 }

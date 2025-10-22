@@ -1,15 +1,9 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "usuario_rol")
-@Getter
-@Setter
-@AllArgsConstructor
 public class UsuarioRol {
 
     @Id
@@ -24,9 +18,35 @@ public class UsuarioRol {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @Column(nullable = false)
-    private boolean rolActivo = true;
-
     public UsuarioRol() {super();}
 
+    public UsuarioRol(Integer id, Rol rol, Usuario usuario) {
+        this.id = id;
+        this.rol = rol;
+        this.usuario = usuario;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }

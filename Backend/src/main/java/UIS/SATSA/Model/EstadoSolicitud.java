@@ -1,11 +1,9 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "estado_solicitud")
-@Data
 public class EstadoSolicitud {
 
     @Id
@@ -24,4 +22,33 @@ public class EstadoSolicitud {
         this.id = id;
     }
 
+    public EstadoSolicitud(Integer id, String estadoSolicitud, String descripcion) {
+        this.id = id;
+        this.estadoSolicitud = estadoSolicitud;
+        this.descripcion = descripcion;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getEstadoSolicitud() {
+        return estadoSolicitud;
+    }
+
+    public void setEstadoSolicitud(String estadoSolicitud) {
+        this.estadoSolicitud = estadoSolicitud;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 }

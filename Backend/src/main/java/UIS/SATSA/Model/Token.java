@@ -1,11 +1,9 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "token")
-@Data
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +27,65 @@ public class Token {
 
     public Token() {super();}
 
+
+    public Token(Integer id, String token, TokenType tokenType, Boolean expired, Boolean revoked, Usuario user) {
+        this.id = id;
+        this.token = token;
+        this.tokenType = tokenType;
+        this.expired = expired;
+        this.revoked = revoked;
+        this.user = user;
+    }
+
     public enum TokenType {
         BEARER
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public TokenType getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(TokenType tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public Boolean getExpired() {
+        return expired;
+    }
+
+    public void setExpired(Boolean expired) {
+        this.expired = expired;
+    }
+
+    public Boolean getRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        this.revoked = revoked;
+    }
+
+    public Usuario getUser() {
+        return user;
+    }
+
+    public void setUser(Usuario user) {
+        this.user = user;
+    }
 }

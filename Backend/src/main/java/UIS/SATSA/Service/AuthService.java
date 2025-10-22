@@ -1,7 +1,10 @@
 package UIS.SATSA.Service;
 
 import UIS.SATSA.Exception.ResourceNotFoundException;
-import UIS.SATSA.Model.*;
+import UIS.SATSA.Model.Rol;
+import UIS.SATSA.Model.Token;
+import UIS.SATSA.Model.Usuario;
+import UIS.SATSA.Model.UsuarioRol;
 import UIS.SATSA.Repository.TokenRepository;
 import UIS.SATSA.Repository.UsuarioRepository;
 import UIS.SATSA.Repository.UsuarioRolRepository;
@@ -51,10 +54,8 @@ public class AuthService {
         user.setApellidos(request.apellidos());
         user.setTelefono(request.telefono());
         user.setEmail(request.correo());
-        user.setCodigo(request.codigo());
         usuarioRol.setUsuario(user);
-        usuarioRol.setRol(new Rol(request.rol()));
-        user.setPrograma(new ProgramaAcademico(request.programa()));
+        usuarioRol.setRol(new Rol(4));
         user.setContrasena(passwordEncoder.encode(request.contrasena()));
         user.setTokens(new ArrayList<>());
 

@@ -1,11 +1,9 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "rol")
-@Data
 public class Rol {
 
     @Id
@@ -19,5 +17,21 @@ public class Rol {
 
     public Rol(Integer id) {
         this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getRolNombre() {
+        return rolNombre;
+    }
+
+    public void setRolNombre(String rolNombre) {
+        this.rolNombre = rolNombre;
     }
 }

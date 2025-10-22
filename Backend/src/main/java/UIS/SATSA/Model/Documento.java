@@ -1,15 +1,10 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "documentos")
-@Getter
-@Setter
 public class Documento {
 
     @Id
@@ -21,9 +16,6 @@ public class Documento {
 
     @Column(nullable = false)
     private LocalDate fecha;
-
-    @Column
-    private Date fechaModificacion;
 
     @Column(nullable = false, length = 500)
     private String rutaDocumento;
@@ -39,6 +31,46 @@ public class Documento {
         this.nombre = nombre;
         this.fecha = fecha;
         this.rutaDocumento = rutaDocumento;
+        this.solicitud = solicitud;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getRutaDocumento() {
+        return rutaDocumento;
+    }
+
+    public void setRutaDocumento(String rutaDocumento) {
+        this.rutaDocumento = rutaDocumento;
+    }
+
+    public Solicitud getSolicitud() {
+        return solicitud;
+    }
+
+    public void setSolicitud(Solicitud solicitud) {
         this.solicitud = solicitud;
     }
 }
