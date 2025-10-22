@@ -1,8 +1,7 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
@@ -10,8 +9,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "solicitud")
-@Getter
-@Setter
+@Data
 public class Solicitud {
 
     @Id
@@ -21,8 +19,11 @@ public class Solicitud {
     @Column(nullable = false)
     private LocalDateTime fechaSolicitud;
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String detalle; //Razon de la ausencia
+
+    @Column(nullable = false, length = 100)
+    private String numeroSolicitud;
 
     @ManyToOne
     @JoinColumn(name = "tipo_solicitud_id")

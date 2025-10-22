@@ -1,10 +1,14 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "notificaciones")
+@Data
+@AllArgsConstructor
 public class Notificacion {
 
     @Id
@@ -12,41 +16,23 @@ public class Notificacion {
     private Integer id;
 
     @Column(nullable = false)
-    private LocalDate fecha;
+    private Integer usuarioId;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
+    @Column(nullable = false, length = 150)
+    private String usuarioEmail;
+
+    @Column(nullable = false, length = 50)
+    private String numeroSolicitud;
+
+    @Column(nullable = false, length = 150)
+    private String tipoSolicitud;
+
+    @Column(nullable = false, length = 100)
+    private String nuevoEstado;
+
+    @Column(nullable = false)
+    private LocalDate fecha;
 
     public Notificacion() {super();}
 
-    public Notificacion(Integer id, LocalDate fecha, Usuario usuario) {
-        this.id = id;
-        this.fecha = fecha;
-        this.usuario = usuario;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 }

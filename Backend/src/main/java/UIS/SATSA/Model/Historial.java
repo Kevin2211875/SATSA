@@ -1,64 +1,41 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "historial")
+@Data
 public class Historial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 100)
-    private String comentario;
+    @Column(columnDefinition = "TEXT")
+    private String comentario; // descripción del cambio (opcional, puede ser null)
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha; // mejor usar LocalDateTime que Date
 
     @ManyToOne
-    @JoinColumn(name = "id_solicitud")
+    @JoinColumn(name = "id_solicitud", nullable = false)
     private Solicitud solicitud;
 
-    public Historial() {super();}
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario; // quien hizo el cambio
 
-    public Historial(Integer id, String comentario, Date fecha, Solicitud solicitud) {
-        this.id = id;
-        this.comentario = comentario;
-        this.fecha = fecha;
-        this.solicitud = solicitud;
-    }
+    @ManyToOne
+    @JoinColumn(name = "estado_anterior")
+    private EstadoSolicitud estadoAnterior;
 
-    public Integer getId() {
-        return id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "estado_nuevo")
+    private EstadoSolicitud estadoNuevo;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public Solicitud getSolicitud() {
-        return solicitud;
-    }
-
-    public void setSolicitud(Solicitud solicitud) {
-        this.solicitud = solicitud;
-    }
 }
