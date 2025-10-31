@@ -1,6 +1,7 @@
 package UIS.SATSA.Model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
@@ -8,8 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "documentos")
-@Getter
-@Setter
+@Data
 public class Documento {
 
     @Id
@@ -34,11 +34,4 @@ public class Documento {
 
     public Documento() {super();}
 
-    public Documento(Integer id, String nombre, LocalDate fecha, String rutaDocumento, Solicitud solicitud) {
-        this.id = id;
-        this.nombre = nombre;
-        this.fecha = fecha;
-        this.rutaDocumento = rutaDocumento;
-        this.solicitud = solicitud;
-    }
 }

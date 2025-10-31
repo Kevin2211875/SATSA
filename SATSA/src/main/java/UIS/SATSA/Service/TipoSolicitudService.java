@@ -161,4 +161,6 @@ public class TipoSolicitudService implements TipoSolicitudRepository {
     public Page<TipoSolicitud> findAll(Pageable pageable) {
         return null;
     }
+
+
 }
