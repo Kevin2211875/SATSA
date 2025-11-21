@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+.bg-app {
+  background-color: #F8F9FF;
+}
+.bg-app-primary {
+  background-color: #00024A;
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px black; /* Color y grosor del contorno */
+}
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra */
+}
