@@ -18,8 +18,9 @@ const CreateSolicitud: React.FC = () => {
     const fetchTipos = async () => {
       try {
         // ✅ Axios ya lanza error si el status no es 2xx
-        const response = await axios.get<TipoSolicitud[]>('http://localhost:8080/api/solicitudes/tipos');
+        const response = await axios.get<TipoSolicitud[]>('http://localhost:8080/tiposolicitud/listar');
         setTipos(response.data);
+        console.log(response.data[0].campos);
       } catch (err) {
         console.error('Error al obtener tipos de solicitud:', err);
         setError('No se pudieron cargar los tipos de solicitud');
@@ -49,7 +50,7 @@ const CreateSolicitud: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto h-screen overflow-hidden flex flex-col">
       <AlertBanner
         message="Para que su solicitud sea gestionada con éxito, también debe hacerlo por el módulo de estudiantes."
         type="error"

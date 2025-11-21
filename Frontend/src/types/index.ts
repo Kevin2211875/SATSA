@@ -199,7 +199,7 @@ export interface TipoSolicitud {
   nombre: string;
   informacion: string;
   disabled: boolean;
-  campos: Record<string, any>;
+  campos: string;
 }
 
 export interface HomeCard {

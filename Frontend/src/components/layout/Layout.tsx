@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ currentPage, setCurrentPage, children }
         />
         {/* Main ocupa el resto */}
         <div className="flex-1 h-full ml-20 flex">
-          <main className="flex-1 h-full bg-transparent rounded-2xl shadow-lg overflow-hidden p-8">
+          <main className="flex-1 h-full bg-transparent rounded-2xl shadow-lg p-8 overflow-y-hidden">
             {children}
           </main>
         </div>

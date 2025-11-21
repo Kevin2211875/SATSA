@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
-import CreateSolicitud from './pages/CreateSolicitud';
+import CreateRequest from './pages/CreateRequest';
 // import Account from './pages/Account';
 // import Notifications from './pages/Notifications';
 // import Help from './pages/Help';
@@ -28,7 +28,7 @@ function App() {
       case 'inicio':
         return <Home setCurrentPage={setCurrentPage} />;
       case 'crear':
-        return <CreateSolicitud />;
+        return <CreateRequest />;
       // case 'cuenta':
       //   return <Account user={user} />;
       // case 'notificaciones':
